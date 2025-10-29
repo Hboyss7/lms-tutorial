@@ -20,7 +20,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
-import { Chapter, Course } from "@/lib/generated/prisma/client";
+import { Chapter, Course } from "@prisma/client";
 import { title } from "process";
 import { is } from "zod/v4/locales";
 import { ChaptersList } from "./chapters-list";
