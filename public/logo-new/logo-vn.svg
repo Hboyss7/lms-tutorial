@@ -1,0 +1,25 @@
+<svg width="229" height="70" viewBox="0 0 260 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Icon Part - Orange Circle with White Elements -->
+  <g>
+    <circle cx="40" cy="40" r="35" fill="#FF6B35"/>
+    
+    <!-- Text "2HT" in White -->
+    <text x="40" y="50" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">2HT</text>
+    
+    <!-- Decorative Elements -->
+    <circle cx="56" cy="24" r="2" fill="white" opacity="0.5"/>
+    <circle cx="24" cy="56" r="2" fill="white" opacity="0.5"/>
+  </g>
+  
+  <!-- Text Part - Vietnamese -->
+  <text x="90" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FF6B35">
+    TRUNG TÂM
+  </text>
+  <text x="90" y="52" font-family="Arial, sans-serif" font-size="15" font-weight="600" fill="#2D3748">
+    Tin Học &amp; Tiếng Anh
+  </text>
+  <rect x="90" y="58" width="140" height="2.5" rx="1.25" fill="#FF6B35"/>
+  <text x="90" y="72" font-family="Arial, sans-serif" font-size="10" fill="#718096">
+    Education &amp; Technology Center
+  </text>
+</svg>

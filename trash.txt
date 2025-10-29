@@ -1,0 +1,143 @@
+"use client";
+
+import { UploadDropzone } from "@/lib/uploadthing";
+import { ourFileRouter } from "@/app/api/uploadthing/core";
+import toast from "react-hot-toast";
+
+interface FileUploadProps {
+    onChange: (url?: string) => void;
+    endpoint: keyof typeof ourFileRouter;
+};
+
+export const FileUpload = ({
+    onChange,
+    endpoint
+}: FileUploadProps) => {
+    return (
+        <UploadDropzone
+            endpoint={endpoint}
+            onClientUploadComplete={(res) => {
+                console.log("✅ Upload complete! Response:", res);
+                const url = res?.[0]?.url;
+                if (url) {
+                    console.log("✅ Calling onChange with URL:", url);
+                    onChange(url);
+                    toast.success("Upload complete!");
+                } else {
+                    console.error("❌ No URL in response:", res);
+                }
+            }}
+            onUploadError={(error: Error) => {
+                console.error("❌ Upload error:", error);
+                // Check if it's just a callback error (file still uploaded)
+                if (error?.message?.includes("callback failed")) {
+                    toast.error("Upload complete but processing pending. Please refresh the page.");
+                } else {
+                    toast.error(`Upload failed: ${error?.message}`);
+                }
+            }}
+            onBeforeUploadBegin={(files) => {
+                console.log("📤 Starting upload:", files);
+                toast.loading("Uploading...");
+                return files;
+            }}
+            onUploadProgress={(progress) => {
+                console.log("📊 Upload progress:", progress);
+            }}
+        />
+    )
+}
+
+
+
+"use client";
+
+import { UploadDropzone } from "@/lib/uploadthing";
+import { ourFileRouter } from "@/app/api/uploadthing/core";
+import toast from "react-hot-toast";
+
+interface FileUploadProps {
+    onChange: (url?: string) => void;
+    endpoint: keyof typeof ourFileRouter;
+};
+
+export const FileUpload = ({
+    onChange,
+    endpoint
+}: FileUploadProps) => {
+    return (
+        <UploadDropzone
+            endpoint={endpoint}
+            onClientUploadComplete={(res) => {
+                onChange(res?.[0].url);
+            }}
+            onUploadError={(error: Error) => {
+                toast.error(`${error?.message}`);
+            }}
+        />
+    )
+}
+
+import { createUploadthing, type FileRouter } from "uploadthing/next";
+import { UploadThingError } from "uploadthing/server";
+import { auth } from "@clerk/nextjs/server";
+import { db } from "@/lib/db";
+
+const f = createUploadthing();
+
+const handleAuth = async () => {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+    return { userId };
+}
+
+export const ourFileRouter = {
+    courseImage: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
+        .middleware(() => handleAuth())
+        .onUploadComplete(async ({ metadata, file }) => {
+            console.log("✅ courseImage uploaded:", file.url);
+            return { fileUrl: file.url };
+        }),
+    courseAttachment: f(["text", "image", "video", "audio", "pdf"])
+        .middleware(() => handleAuth())
+        .onUploadComplete(async ({ metadata, file }) => {
+            console.log("✅ courseAttachment uploaded:", file.url);
+            return { fileUrl: file.url };
+        }),
+    chapterVideo: f({ video: { maxFileCount: 1, maxFileSize: "512GB" } })
+        .middleware(() => handleAuth())
+        .onUploadComplete(async ({ metadata, file }) => {
+            console.log("✅ chapterVideo uploaded:", file.url);
+            return { fileUrl: file.url };
+        })
+} satisfies FileRouter;
+
+export type OurFileRouter = typeof ourFileRouter;
+
+
+import { createUploadthing, type FileRouter } from "uploadthing/next";
+import { UploadThingError } from "uploadthing/server";
+import { auth } from "@clerk/nextjs/server";
+import { db } from "@/lib/db";
+
+const f = createUploadthing();
+
+const handleAuth = async () => {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+    return { userId };
+}
+
+export const ourFileRouter = {
+    courseImage: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
+        .middleware(() => handleAuth())
+        .onUploadComplete(() => { }),
+    courseAttachment: f(["text", "image", "video", "audio", "pdf"])
+        .middleware(() => handleAuth())
+        .onUploadComplete(() => { }),
+    chapterVideo: f({ video: { maxFileCount: 1, maxFileSize: "512GB" } })
+        .middleware(() => handleAuth())
+        .onUploadComplete(() => { })
+} satisfies FileRouter;
+
+export type OurFileRouter = typeof ourFileRouter;
